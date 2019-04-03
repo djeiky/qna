@@ -6,12 +6,7 @@ RSpec.describe QuestionsController, type: :controller do
   let(:question) { create(:question) }
 
   describe 'GET #index' do
-    let(:questions) { create_list(:question, 3) }
     before { get :index }
-
-    it 'get all questions from database' do
-      expect(assigns(:questions)).to match_array(questions)
-    end
 
     it 'renders index view' do
       expect(response).to render_template(:index)
@@ -21,10 +16,6 @@ RSpec.describe QuestionsController, type: :controller do
   describe 'GET #show' do
     before { get :show, params: { id: question } }
 
-    it 'assings @question' do
-      expect(assigns(:question)).to eq question
-    end
-
     it 'renders show view' do
       expect(response).to render_template(:show)
     end
@@ -33,10 +24,6 @@ RSpec.describe QuestionsController, type: :controller do
   describe 'GET #new' do
     before { get :new }
 
-    it 'assigns new @question' do
-      expect(assigns(:question)).to be_a_new(Question)
-    end
-
     it 'renders new view' do
       expect(response).to render_template(:new)
     end
@@ -44,10 +31,6 @@ RSpec.describe QuestionsController, type: :controller do
 
   describe 'GET #edit' do
     before { get :edit, params: { id: question } }
-
-    it 'assings @question' do
-      expect(assigns(:question)).to eq question
-    end
 
     it 'renders edit view' do
       expect(response).to render_template(:edit)
@@ -59,9 +42,12 @@ RSpec.describe QuestionsController, type: :controller do
       it 'saves new question to database' do
         expect { post :create, params: { question: attributes_for(:question) } }.to change(Question, :count).by(1)
       end
+
+      let(:question) {create(:question)}
       it 'redirects to show question view' do
-        post :create, params: { question: attributes_for(:question) }
-        expect(response).to redirect_to assigns(:question)
+        post :create, params: { question: {title: "test title", body: "test body"} }
+        new_question = Question.find_by(title: "test title")
+        expect(response).to redirect_to new_question
       end
     end
     context 'with invalid params' do
@@ -77,10 +63,6 @@ RSpec.describe QuestionsController, type: :controller do
 
   describe 'PATCH #update' do
     context 'with valid params' do
-      it 'assigns requested question' do
-        patch :update, params: { id: question, question: attributes_for(:question) }
-        expect(assigns(:question)).to eq question
-      end
       it 'changes question attributes' do
         patch :update, params: { id: question, question: { title: 'NewTitle', body: 'NewBody' } }
         question.reload
