@@ -1,0 +1,5 @@
+= link_to "Create question", new_question_path
+h1 Questions List
+- questions.each do |q|
+  p = link_to q.title, question_path(q)
+

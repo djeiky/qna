@@ -1,0 +1,5 @@
+-if resource&.errors.present?
+  p = "#{resource.errors.count} errors in #{resource.class.name}"
+  ul
+    - resource.errors.full_messages.each do |message|
+      li = message

@@ -1,8 +1,10 @@
 # frozen_string_literal: true
-
 FactoryBot.define do
+  sequence :body do |b|
+    "Answer body - #{b}"
+  end
   factory :answer do
-    body { 'MyText' }
+    body
     question { nil }
 
     trait :invalid do
