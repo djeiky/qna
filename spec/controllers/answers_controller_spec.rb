@@ -17,7 +17,7 @@ RSpec.describe AnswersController, type: :controller do
     end
     context 'with invalid params' do
       it 'not saves invalid answer to datatbase' do
-        expect { post :create, params: { question_id: question, answer: attributes_for(:answer, :invalid) } }.to_not change(question.answers, :count)
+        expect { post :create, params: { question_id: question, answer: attributes_for(:answer, :invalid) } }.to_not change(Answer, :count)
       end
       it 're-renders answer new view' do
         post :create, params: { question_id: question, answer: attributes_for(:answer, :invalid) }

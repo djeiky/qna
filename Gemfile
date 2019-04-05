@@ -62,6 +62,7 @@ group :test do
   gem 'chromedriver-helper'
   gem 'rails-controller-testing'
   gem 'shoulda-matchers'
+  gem 'launchy'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
@@ -70,3 +71,5 @@ gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 gem 'slim-rails'
 
 gem 'decent_exposure'
+
+gem 'devise'
