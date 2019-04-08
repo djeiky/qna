@@ -48,6 +48,10 @@ RSpec.describe QuestionsController, type: :controller do
         expect { post :create, params: { question: attributes_for(:question) } }.to change(Question, :count).by(1)
       end
 
+      it "saves new user's question to database" do
+        expect { post :create, params: { question: attributes_for(:question) } }.to change(user.questions, :count).by(1)
+      end
+
       let(:question) {create(:question)}
       it 'redirects to show question view' do
         post :create, params: { question: {title: "test title", body: "test body"} }
@@ -99,9 +103,14 @@ RSpec.describe QuestionsController, type: :controller do
   describe 'DELETE #destroy' do
     before {login(user)}
     let!(:question) { create(:question, user: user) }
+    let(:another_user) {create(:user)}
+    let!(:another_question) {create(:question, user: another_user)}
 
     it 'deletes question from database' do
       expect { delete :destroy, params: { id: question } }.to change(Question, :count).by(-1)
+    end
+    it "tries to delete another user's question" do
+      expect { delete :destroy, params: { id: another_question } }.to_not change(Question, :count)
     end
 
     it 'redirects to question index view' do

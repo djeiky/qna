@@ -12,6 +12,9 @@ RSpec.describe AnswersController, type: :controller do
       it 'saves new answer to database' do
         expect { post :create, params: { question_id: question, answer: attributes_for(:answer) } }.to change(question.answers, :count).by(1)
       end
+      it "seves new user's answer to database" do
+        expect { post :create, params: { question_id: question, answer: attributes_for(:answer) } }.to change(user.answers, :count).by(1)
+      end
       it 'redirects to the question show view' do
         post :create, params: { question_id: question, answer: attributes_for(:answer) }
         expect(response).to redirect_to question
@@ -35,8 +38,7 @@ RSpec.describe AnswersController, type: :controller do
 
     before {login(user)}
 
-    context "user deletes own answer" do
-      it "deletes answer" do
+      it "user deletes own answer" do
         expect {delete :destroy, params: {id: answer}}.to change(Answer, :count).by(-1)
       end
 
@@ -44,8 +46,9 @@ RSpec.describe AnswersController, type: :controller do
         delete :destroy, params: {id: answer}
         expect(response).to redirect_to question_path(question)
       end
-    end
 
-    context "user deletes somebody's answer"
+    it "user deletes somebody's answer"do
+      expect {delete :destroy, params: {id: another_answer}}.to_not change(Answer, :count)
+    end
   end
 end
