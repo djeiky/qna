@@ -12,14 +12,15 @@ feature "User delete answer", %q{
 
   describe "authenticated user" do
 
-    scenario "tries to delete own answer" do
+    scenario "tries to delete own answer", js: true do
       sign_in user
       visit question_path(question)
+      within ".answers" do
+        click_on "Delete Answer"
+        page.driver.browser.switch_to.alert.accept
 
-      click_on "Delete Answer"
-
-      expect(page).to have_content "Your answer successfully deleted."
-      expect(page).to_not have_content answer.body
+        expect(page).to_not have_content answer.body
+      end
     end
 
     scenario "tries to delete sombody's answer" do
@@ -29,7 +30,7 @@ feature "User delete answer", %q{
       expect(page).to have_no_link "Delete Answer"
     end
   end
-  scenario "Unauthenticated user tries to delete question" do
+  scenario "Unauthenticated user tries to delete answer" do
     visit question_path(question)
 
     expect(page).to have_no_link "Delete Answer"

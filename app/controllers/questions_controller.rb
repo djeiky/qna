@@ -28,15 +28,7 @@ class QuestionsController < ApplicationController
   end
 
   def update
-    if current_user&.author_of?(@question)
-      if @question.update(question_params)
-        redirect_to question_path(@question)
-      else
-        render :edit
-      end
-    else
-      redirect_to question_path(@question), alert: 'You are not author of this question.'
-    end
+    @question.update(question_params) if current_user&.author_of?(@question)
   end
 
   def destroy

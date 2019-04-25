@@ -15,15 +15,19 @@ feature "User can create answer for a question", %q{
       visit question_path(question)
     end
 
-    scenario "creates answer" do
-      fill_in "Body", with: "New Answer"
-      click_on "Create Answer"
+    scenario "creates answer", js: true do
+      within "#new-answer-form" do
+        fill_in "Body", with: "New Answer"
+        click_on "Create Answer"
+      end
 
-      expect(page).to have_content "Your answer successfully created."
-      expect(page).to have_content "New Answer"
+      expect(current_path).to eq question_path(question)
+      within ".answers" do
+        expect(page).to have_content "New Answer"
+      end
     end
 
-    scenario "tries to create answer with invalid params" do
+    scenario "tries to create answer with invalid params", js: true do
       click_on "Create Answer"
 
       expect(page).to have_content "Body can't be blank"
@@ -32,11 +36,11 @@ feature "User can create answer for a question", %q{
 
   scenario "Unauthenticated user" do
     visit question_path(question)
-
-    fill_in "Body", with: "Answer Body"
-    click_on "Create Answer"
+    within "#new-answer-form" do
+      fill_in "Body", with: "Answer Body"
+      click_on "Create Answer"
+    end
 
     expect(page).to have_content "You need to sign in or sign up before continuing."
-
   end
 end
