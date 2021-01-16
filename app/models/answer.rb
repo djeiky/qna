@@ -4,12 +4,16 @@ class Answer < ApplicationRecord
   belongs_to :question
   belongs_to :user
 
+  has_many_attached :files
+
   validates :body, presence: true
+
+  scope :desc, -> { order(best: :DESC) }
 
   def set_best
     Answer.transaction do
-      self.question.answers.update_all(best: false)
-      self.update(best: true)
+      question.answers.update_all(best: false)
+      update!(best: true)
     end
   end
 end

@@ -10,13 +10,13 @@ feature "Author can edit his question", %q{
   given!(:another_user) {create(:user)}
   given!(:another_question) {create(:question, user: another_user)}
 
-  describe "Authentiacted user" do
+  describe "Authentiacted user", js: true do
     background do
       sign_in user
       visit question_path(question)
     end
 
-    scenario "can edit his question", js: true do
+    scenario "can edit his question" do
       within ".question" do
         click_on "Edit"
 
@@ -31,14 +31,14 @@ feature "Author can edit his question", %q{
 
     end
 
-    scenario "can't edit somebody's question", js: true do
+    scenario "can't edit somebody's question" do
       visit question_path(another_question)
       within ".question" do
         expect(page).to have_no_link "Edit"
       end
     end
 
-    scenario "edit question with invalid params", js: true do
+    scenario "edit question with invalid params" do
       within ".question" do
         click_on "Edit"
 
@@ -48,6 +48,30 @@ feature "Author can edit his question", %q{
 
       expect(page).to have_content "Title can't be blank"
 
+    end
+
+    scenario "edit question with attached files" do
+      within ".question" do
+        click_on "Edit"
+        attach_file 'Files', ["#{Rails.root}/spec/rails_helper.rb", "#{Rails.root}/spec/spec_helper.rb"]
+        click_on "Update Question"
+      end
+
+      expect(page).to have_link "rails_helper.rb"
+      expect(page).to have_link "spec_helper.rb"
+    end
+
+    scenario "delete previous attached file" do
+      within ".question" do
+        click_on "Edit"
+        attach_file 'Files', ["#{Rails.root}/spec/spec_helper.rb"]
+        click_on "Update Question"
+      end
+
+      within ".question-files" do
+        click_on "Delete"
+        expect(page).to_not have_link "spec_helper.rb"
+      end
     end
   end
 
