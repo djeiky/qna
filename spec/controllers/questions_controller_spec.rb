@@ -6,6 +6,7 @@ RSpec.describe QuestionsController, type: :controller do
 
   let(:user) {create(:user)}
   let(:question) { create(:question, user: user) }
+  let(:another_user) {create(:user)}
 
   describe 'GET #index' do
     before { get :index }
@@ -29,15 +30,6 @@ RSpec.describe QuestionsController, type: :controller do
 
     it 'renders new view' do
       expect(response).to render_template(:new)
-    end
-  end
-
-  describe 'GET #edit' do
-    before {login(user)}
-    before { get :edit, params: { id: question } }
-
-    it 'renders edit view' do
-      expect(response).to render_template(:edit)
     end
   end
 
@@ -74,28 +66,38 @@ RSpec.describe QuestionsController, type: :controller do
     before {login(user)}
     context 'with valid params' do
       it 'changes question attributes' do
-        patch :update, params: { id: question, question: { title: 'NewTitle', body: 'NewBody' } }
+        patch :update, params: { id: question, question: { title: 'NewTitle', body: 'NewBody' }, format: :js }
         question.reload
 
         expect(question.title).to eq 'NewTitle'
         expect(question.body).to eq 'NewBody'
       end
-      it 'redirects to updated question view' do
-        patch :update, params: { id: question, question: attributes_for(:question) }
-        expect(response).to redirect_to question
+      let!(:another_question) {create(:question, user: another_user)}
+      it "not change attributes another user's question" do
+        patch :update, params: { id: another_question, question: { title: 'NewTitle', body: 'NewBody' }, format: :js }
+        another_question.reload
+
+        expect(question.title).to_not eq 'NewTitle'
+        expect(question.body).to_not eq 'NewBody'
+      end
+
+      it 'render update question view' do
+        patch :update, params: { id: question, question: attributes_for(:question), format: :js }
+        expect(response).to render_template :update
       end
     end
 
     context 'with invalid params' do
-      before { patch :update, params: { id: question, question: attributes_for(:question, :invalid) } }
+      before { patch :update, params: { id: question, question: attributes_for(:question, :invalid) }, format: :js }
       it 'not change question' do
         question.reload
 
         expect(question.title).to eq question.title
         expect(question.body).to eq question.body
       end
-      it 're-renders edit view' do
-        expect(response).to render_template(:edit)
+
+      it 're-renders update template' do
+        expect(response).to render_template :update
       end
     end
   end
@@ -103,7 +105,6 @@ RSpec.describe QuestionsController, type: :controller do
   describe 'DELETE #destroy' do
     before {login(user)}
     let!(:question) { create(:question, user: user) }
-    let(:another_user) {create(:user)}
     let!(:another_question) {create(:question, user: another_user)}
 
     it 'deletes question from database' do

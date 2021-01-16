@@ -4,7 +4,11 @@ Rails.application.routes.draw do
   devise_for :users
   root to: 'questions#index'
 
-  resources :questions do
-    resources :answers, shallow: true
+  resources :questions, except: [:edit] do
+    resources :answers, shallow: true, only: [:create, :update, :destroy, :best] do
+      member do
+        patch :best
+      end
+    end
   end
 end

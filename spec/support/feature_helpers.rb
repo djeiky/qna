@@ -5,4 +5,5 @@ module FeatureHelpers
     fill_in "Password", with: user.password
     click_on "Log in"
   end
+  Capybara.default_max_wait_time = 5
 end
