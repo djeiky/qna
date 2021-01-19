@@ -1,7 +1,10 @@
 - if answer.persisted?
-  .answer id= "answer-#{answer.id}" class=("best-answer" unless answer.best? )
+  .answer id= "answer-#{answer.id}" class=("best-answer" if answer.best? )
     p id= "answer-body-#{answer.id}"
       = answer.body
+      - if answer.files.attached?
+        .answer-files
+          = render "shared/attachments", resource: answer.files
       - if current_user&.author_of?(answer.question) && !answer.best?
         = link_to "Make Best", best_answer_path(answer), method: :patch, remote: true
       - if current_user&.author_of?(answer)
@@ -12,4 +15,6 @@
       div class="answer-error-#{answer.id}"
       = f.label :body
       = f.text_area :body
+      = f.label :files
+      = f.file_field :files, multiple: true, direct_upload: true
       = f.submit

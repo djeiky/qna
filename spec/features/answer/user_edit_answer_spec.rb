@@ -44,6 +44,30 @@ feature "Author can edit his answer", %q{
         expect(page).to have_content "Body can't be blank"
       end
     end
+
+    scenario "edit answer with attached files" do
+      within ".answers" do
+        click_on "Edit Answer"
+        attach_file 'Files', ["#{Rails.root}/spec/rails_helper.rb", "#{Rails.root}/spec/spec_helper.rb"]
+        click_on "Update Answer"
+
+        expect(page).to have_link "rails_helper.rb"
+        expect(page).to have_link "spec_helper.rb"
+      end
+    end
+    scenario "delete previous attached file" do
+      within ".answers" do
+        click_on "Edit Answer"
+        attach_file 'Files', ["#{Rails.root}/spec/spec_helper.rb"]
+        click_on "Update Answer"
+      end
+
+      within ".answer-files" do
+        click_on "Delete"
+        expect(page).to_not have_link "spec_helper.rb"
+      end
+    end
+
   end
 
   scenario "tries to edit somebody's answer" do
