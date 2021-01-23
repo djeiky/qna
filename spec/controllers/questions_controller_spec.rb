@@ -35,6 +35,10 @@ RSpec.describe QuestionsController, type: :controller do
     it 'assigns a new Question to @question' do
       expect(assigns(:question)).to be_a_new(Question)
     end
+
+    it 'assigns a new empty award to a question' do
+      expect(assigns(:question).award).to be_a_new(Award)
+    end
   end
 
   describe 'POST #create' do

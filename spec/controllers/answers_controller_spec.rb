@@ -3,40 +3,40 @@
 require 'rails_helper'
 
 RSpec.describe AnswersController, type: :controller do
-  let!(:user) {create(:user)}
+  let!(:user) { create(:user) }
   let!(:question) { create(:question, user: user) }
-  let!(:answer) {create(:answer, question: question, user: user)}
-  let(:another_user) {create(:user)}
-  let!(:another_answer) {create(:answer, question: question, user: another_user)}
+  let!(:answer) { create(:answer, question: question, user: user) }
+  let(:another_user) { create(:user) }
+  let!(:another_answer) { create(:answer, question: question, user: another_user) }
 
 
   describe 'POST #create' do
-    before {login(user)}
+    before { login(user) }
     context 'with valid params' do
       it 'saves new answer to database' do
-        expect { post :create, params: { question_id: question, answer: attributes_for(:answer) }, format: :js }.to change(question.answers, :count).by(1)
+        expect { post :create, params: {question_id: question, answer: attributes_for(:answer)}, format: :js }.to change(question.answers, :count).by(1)
       end
       it "seves new user's answer to database" do
-        expect { post :create, params: { question_id: question, answer: attributes_for(:answer), format: :js } }.to change(user.answers, :count).by(1)
+        expect { post :create, params: {question_id: question, answer: attributes_for(:answer), format: :js} }.to change(user.answers, :count).by(1)
       end
       it 'render create view' do
-        post :create, params: { question_id: question, answer: attributes_for(:answer), format: :js }
+        post :create, params: {question_id: question, answer: attributes_for(:answer), format: :js}
         expect(response).to render_template :create
       end
     end
     context 'with invalid params' do
       it 'not saves invalid answer to datatbase' do
-        expect { post :create, params: { question_id: question, answer: attributes_for(:answer, :invalid) }, format: :js }.to_not change(Answer, :count)
+        expect { post :create, params: {question_id: question, answer: attributes_for(:answer, :invalid)}, format: :js }.to_not change(Answer, :count)
       end
       it 're-renders answer create view' do
-        post :create, params: { question_id: question, answer: attributes_for(:answer, :invalid), format: :js }
+        post :create, params: {question_id: question, answer: attributes_for(:answer, :invalid), format: :js}
         expect(response).to render_template :create
       end
     end
   end
 
   describe "PATCH #update" do
-    before {login(user)}
+    before { login(user) }
     context "updates own answer with valid attributes" do
       it "change attributes" do
         patch :update, params: {id: answer, answer: {body: "New Body"}}, format: :js
@@ -84,6 +84,12 @@ RSpec.describe AnswersController, type: :controller do
         expect(answer).to be_best
       end
 
+      it "it assigns award to user" do
+        award = create(:award, question: question)
+        patch :best, params: {id: another_answer}, format: :js
+        expect { award.reload }.to change(award, :recipient).from(nil).to(another_answer.user)
+      end
+
     end
     context "User choose best answer for sombody's question" do
       it "not change answer to best" do
@@ -101,11 +107,11 @@ RSpec.describe AnswersController, type: :controller do
     before { login(user) }
 
     it "user deletes own answer" do
-      expect {delete :destroy, params: {id: answer}, format: :js}.to change(Answer, :count).by(-1)
+      expect { delete :destroy, params: {id: answer}, format: :js }.to change(Answer, :count).by(-1)
     end
 
-    it "user deletes somebody's answer"do
-      expect {delete :destroy, params: {id: another_answer}, format: :js}.to_not change(Answer, :count)
+    it "user deletes somebody's answer" do
+      expect { delete :destroy, params: {id: another_answer}, format: :js }.to_not change(Answer, :count)
     end
 
     it "render destroy template" do

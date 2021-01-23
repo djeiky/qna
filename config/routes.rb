@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
+  get 'awards/index'
   devise_for :users
   root to: 'questions#index'
 
@@ -14,4 +15,5 @@ Rails.application.routes.draw do
 
   resources :attachment, only: [:destroy]
   resources :links, only: [:destroy]
+  resources :awards, only: [:index]
 end

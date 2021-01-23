@@ -17,6 +17,8 @@ class Answer < ApplicationRecord
     Answer.transaction do
       question.answers.update_all(best: false)
       update!(best: true)
+      question.award&.update!(recipient: user)
     end
+    reload
   end
 end

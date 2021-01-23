@@ -6,6 +6,13 @@
   p
     = f.label :body
     = f.text_area :body
+  p Award
+  p
+    = f.fields_for :award do |award|
+      = award.label :title, "Award title"
+      = award.text_field :title
+      = award.label :image, "Award image"
+      = award.file_field :image
   p Links:
   #links
     p
