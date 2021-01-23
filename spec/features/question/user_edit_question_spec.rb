@@ -73,6 +73,19 @@ feature "Author can edit his question", %q{
         expect(page).to_not have_link "spec_helper.rb"
       end
     end
+
+    scenario "add links while edit question" do
+      within ".question" do
+        click_on "Edit"
+        click_on "Add link"
+        fill_in "Link name", with: "ya.ru"
+        fill_in "Url", with: "http://ya.ru"
+
+        click_on "Update Question"
+        expect(page).to have_link "ya.ru"
+      end
+
+    end
   end
 
   scenario "Unauthenticated user can't edit question", js: true do
