@@ -119,4 +119,9 @@ RSpec.describe AnswersController, type: :controller do
       expect(response).to render_template :destroy
     end
   end
+
+  it_behaves_like 'voted' do
+    let(:question) { create :question }
+    let(:resource) { create(:answer, question: question) }
+  end
 end

@@ -23,6 +23,9 @@
             - if current_user&.author_of?(answer)
               ||
               = link_to "Delete Link", link_path(link), method: :delete, remote: true
+    p.rating = "Rating: #{answer.rating}"
+    = render "shared/vote_links", resource: answer
+
     = form_with model: answer, html: {id: "edit-answer-#{answer.id}", style: "display:none;"} do |f|
       div class="answer-error-#{answer.id}"
       = f.label :body

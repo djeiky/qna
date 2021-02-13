@@ -1,0 +1,14 @@
+- if current_user && !current_user.author_of?(resource)
+  .vote
+    - if resource.user_voted?(current_user)
+      = link_to 'Vote back', polymorphic_path(resource, action: :vote_back), method: :post, remote: true, data: {type: :json}, class: 'vote_back'
+      |
+      = link_to 'Up', polymorphic_path(resource, action: :voteup), method: :post, remote: true, data: {type: :json}, class: 'vote hidden'
+      |
+      = link_to 'Down', polymorphic_path(resource, action: :votedown), method: :post, remote: true, data: {type: :json}, class: 'vote hidden'
+    - else
+      = link_to 'Vote back', polymorphic_path(resource, action: :vote_back), method: :post, remote: true, data: {type: :json}, class: 'vote_back hidden'
+      |
+      = link_to 'Up', polymorphic_path(resource, action: :voteup), method: :post, remote: true, data: {type: :json}, class: 'vote'
+      |
+      = link_to 'Down', polymorphic_path(resource, action: :votedown), method: :post, remote: true, data: {type: :json}, class: 'vote'
