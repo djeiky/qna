@@ -6,10 +6,10 @@ feature "Author can edit his answer", %q{
   I'd like to be able to edit my answer
 } do
 
-  given!(:user) {create(:user)}
-  given!(:question) {create(:question, user: user)}
-  given!(:answer) {create(:answer, question: question, user: user)}
-  given!(:another_user) {create(:user)}
+  given!(:user) { create(:user) }
+  given!(:question) { create(:question, user: user) }
+  given!(:answer) { create(:answer, question: question, user: user) }
+  given!(:another_user) { create(:user) }
 
   scenario "Unauthenticated user can't edit answer", js: true do
     visit question_path(question)
@@ -35,6 +35,7 @@ feature "Author can edit his answer", %q{
         expect(page).to have_no_selector "textarea"
       end
     end
+
     scenario "edit answer with invalid params" do
       within ".answers" do
         click_on "Edit Answer"
@@ -65,6 +66,18 @@ feature "Author can edit his answer", %q{
       within ".answer-files" do
         click_on "Delete"
         expect(page).to_not have_link "spec_helper.rb"
+      end
+    end
+
+    scenario "add links to own answer" do
+      within ".answers" do
+        click_on "Edit Answer"
+        click_on "Add link"
+        fill_in "Link name", with: "ya.ru"
+        fill_in "Url", with: "http://ya.ru"
+        click_on "Update Answer"
+
+        expect(page).to_not have_link "ya.ru"
       end
     end
 

@@ -6,6 +6,20 @@
   p
     = f.label :body
     = f.text_area :body
+  p Award
+  p
+    = f.fields_for :award do |award|
+      = award.label :title, "Award title"
+      = award.text_field :title
+      = award.label :image, "Award image"
+      = award.file_field :image
+  p Links:
+  #links
+    p
+      = f.fields_for :links do |link|
+        .link
+          = render "shared/link_fields", f: link
+      = link_to_add_association 'Add link', f, :links, partial: 'shared/link_fields'
   p
     = f.label :files
     = f.file_field :files, multiple: true, direct_upload: true

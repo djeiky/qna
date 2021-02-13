@@ -73,6 +73,8 @@ gem 'slim-rails'
 
 gem 'devise'
 
-gem 'aws-sdk-s3'
+gem 'aws-sdk-s3', require: false
 
 gem 'jquery-rails'
+
+gem 'cocoon'

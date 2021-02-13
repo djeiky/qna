@@ -6,7 +6,7 @@ feature "User create questions", %q{
 } do
 
   describe "Authenticated user" do
-    given(:user) {create(:user)}
+    given(:user) { create(:user) }
 
     background do
       sign_in user
@@ -38,6 +38,17 @@ feature "User create questions", %q{
 
       expect(page).to have_link 'rails_helper.rb'
       expect(page).to have_link 'spec_helper.rb'
+    end
+
+    scenario "creates question with award" do
+      fill_in "Title", with: "Question title"
+      fill_in "Body", with: "Question body"
+      fill_in 'Award title', with: "Award for best answer"
+      attach_file "Award image", "#{Rails.root}/spec/support/files/award.jpeg"
+      click_on "Create"
+
+      expect(page).to have_content "Award for best answer"
+      expect(page).to have_css("img[src*='award.jpeg']")
     end
   end
 

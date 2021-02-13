@@ -12,6 +12,13 @@ h4 Add Answer
   = f.label :body
   = f.text_area :body
   = f.label :files
+  p Links:
+  #links
+    p
+      = f.fields_for :links do |link|
+        .link
+          = render "shared/link_fields", f: link
+      = link_to_add_association 'Add link', f, :links, partial: 'shared/link_fields'
   = f.file_field :files, multiple: true, direct_upload: true
   = f.submit "Create Answer"
 

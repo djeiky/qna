@@ -1,5 +1,5 @@
 - if answer.persisted?
-  .answer id= "answer-#{answer.id}" class=("best-answer" if answer.best? )
+  .answer id= "answer-#{answer.id}" class=("best-answer" if answer.best?)
     p id= "answer-body-#{answer.id}"
       = answer.body
       - if answer.files.attached?
@@ -10,11 +10,29 @@
       - if current_user&.author_of?(answer)
         = link_to "Edit Answer", "#", class: "edit-answer-link", data: {answer_id: answer.id}
         ||
-        = link_to "Delete Answer", answer_path(answer), method: :delete, remote: true,  data: {confirm: "Are you shure?"}
+        = link_to "Delete Answer", answer_path(answer), method: :delete, remote: true, data: {confirm: "Are you shure?"}
+    p Links:
+    .answer-links
+      ul
+        - answer.links.each do |link|
+          li class="link-#{link.id}"
+            - if link.gist?
+              .gist data-src="#{link.url}.json"
+            - else
+              = link_to link.name, link.url
+            - if current_user&.author_of?(answer)
+              ||
+              = link_to "Delete Link", link_path(link), method: :delete, remote: true
     = form_with model: answer, html: {id: "edit-answer-#{answer.id}", style: "display:none;"} do |f|
       div class="answer-error-#{answer.id}"
       = f.label :body
       = f.text_area :body
       = f.label :files
+      p Links:
+      .edit-answer-links
+        = f.fields_for :links do |link|
+          .link
+            = render "shared/link_fields", f: link
+        = link_to_add_association 'Add link', f, :links, partial: 'shared/link_fields'
       = f.file_field :files, multiple: true, direct_upload: true
       = f.submit
