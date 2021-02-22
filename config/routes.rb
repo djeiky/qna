@@ -1,12 +1,19 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  get 'awards/index'
   devise_for :users
   root to: 'questions#index'
 
-  resources :questions, except: [:edit] do
-    resources :answers, shallow: true, only: [:create, :update, :destroy, :best] do
+  concern :voted do
+    member do
+      post :voteup
+      post :votedown
+      post :vote_back
+    end
+  end
+
+  resources :questions, concerns: [:voted], except: [:edit] do
+    resources :answers, concerns: [:voted], shallow: true, only: [:create, :update, :destroy, :best] do
       member do
         patch :best
       end

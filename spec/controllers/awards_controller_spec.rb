@@ -9,6 +9,7 @@ RSpec.describe AwardsController, type: :controller do
     sign_in(user)
     get :index
   end
+
   describe "GET #index" do
     it "assigns award to @awards" do
       get :index
