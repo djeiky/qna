@@ -7,6 +7,8 @@ class AnswersController < ApplicationController
   before_action :set_question, only: [:create]
   before_action :set_answer, only: [:destroy, :update, :best]
 
+  after_action :publish_answer, only: [:create]
+
   def create
     @answer = @question.answers.new(answers_params)
     @answer.user = current_user
@@ -33,12 +35,22 @@ class AnswersController < ApplicationController
 
   private
 
+  def publish_answer
+    return if @answer.errors.any?
+
+    ActionCable.server.broadcast(
+      "question_#{@question_id}",
+      answer: @answer
+    )
+  end
+
   def answers_params
     params.require(:answer).permit(:body, files: [], links_attributes: [:name, :url])
   end
 
   def set_question
     @question = Question.find(params[:question_id])
+    gon.question = @question
   end
 
   def set_answer

@@ -18,5 +18,4 @@ $(document).on 'turbolinks:load', () ->
     connected: ->
       @perform 'follow'
     received: (server_data) ->
-      console.log(server_data)
       $(".questions").append(JST["templates/question"](server_data))
