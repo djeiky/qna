@@ -12,8 +12,14 @@ Rails.application.routes.draw do
     end
   end
 
+  #concern :commented do
+  #  resources :comments, only: [:create]
+  #end
+
   resources :questions, concerns: [:voted], except: [:edit] do
+    resources :comments, module: :questions, only: [:create]
     resources :answers, concerns: [:voted], shallow: true, only: [:create, :update, :destroy, :best] do
+      resources :comments, module: :answers, only: [:create]
       member do
         patch :best
       end

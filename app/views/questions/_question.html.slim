@@ -33,6 +33,9 @@
       - if @question.files.attached?
         .question-files
           = render "shared/attachments", resource: @question.files
+  .comments
+    = render @question.comments
+    = render partial: "comments/form", locals: {commentable: @question}
 
   = form_with model: question, class: "hidden", html: {id: "edit-question-form"} do |f|
     = f.label :title

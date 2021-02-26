@@ -39,7 +39,7 @@ class AnswersController < ApplicationController
     return if @answer.errors.any?
 
     ActionCable.server.broadcast(
-      "question_#{@question_id}",
+      "answers_question_#{@question_id}",
       answer: @answer
     )
   end
