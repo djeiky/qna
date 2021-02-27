@@ -1,11 +1,12 @@
 require 'rails_helper'
 
-feature 'User can add comment to question', %q{
+feature 'User can add comment to answer', %q{
   As authenticated user
-  I'd like to leave a comment to a question
+  I'd like to leave a comment to an answer
 } do
-  given(:user) { create :user }
-  given(:question) { create :question }
+  given!(:user) { create :user }
+  given!(:question) { create :question }
+  given!(:answer) { create(:answer, question: question) }
   describe "multiple sessions", js: true do
     scenario "comments appear in another browser" do
       Capybara.using_session('guest') do
@@ -15,7 +16,7 @@ feature 'User can add comment to question', %q{
       Capybara.using_session('user') do
         sign_in(user)
         visit question_path(question)
-        within(".question") do
+        within(".answers") do
           fill_in "New comment", with: "New question's comment"
           click_on "Add comment"
 
@@ -24,7 +25,7 @@ feature 'User can add comment to question', %q{
       end
 
       Capybara.using_session('guest') do
-        within(".question") do
+        within(".answers") do
           expect(page).to have_content "New question's comment"
         end
       end

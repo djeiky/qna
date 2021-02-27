@@ -32,7 +32,7 @@ feature "Author can edit his answer", %q{
 
         expect(page).to_not have_content answer.body
         expect(page).to have_content "Edited answer"
-        expect(page).to have_no_selector "textarea"
+        expect(page).to_not have_button "Update answer"
       end
     end
 

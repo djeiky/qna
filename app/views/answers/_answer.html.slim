@@ -25,7 +25,10 @@
               = link_to "Delete Link", link_path(link), method: :delete, remote: true
     p.rating = "Rating: #{answer.rating}"
     = render "shared/vote_links", resource: answer
-
+    p Comments:
+    .comments
+      = render answer.comments
+    = render partial: "comments/form", locals: {commentable: answer}
     = form_with model: answer, html: {id: "edit-answer-#{answer.id}", style: "display:none;"} do |f|
       div class="answer-error-#{answer.id}"
       = f.label :body

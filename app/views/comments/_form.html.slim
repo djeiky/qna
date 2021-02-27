@@ -2,7 +2,7 @@
   - if current_user
     = form_with model: [commentable, commentable.comments.build] do |f|
       p
-        = f.label :body
+        = f.label :body, "New comment"
         = f.text_area :body
       p
         = f.submit "Add comment"

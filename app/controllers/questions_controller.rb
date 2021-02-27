@@ -49,6 +49,7 @@ class QuestionsController < ApplicationController
 
   def set_question
     @question = Question.with_attached_files.find(params[:id])
+    gon.question = @question
   end
 
   def question_params
@@ -59,8 +60,8 @@ class QuestionsController < ApplicationController
     return if @question.errors.any?
 
     ActionCable.server.broadcast(
-      'questions',
-      question: @question
+        'questions',
+        question: @question
     )
   end
 end
