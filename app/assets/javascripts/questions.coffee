@@ -13,3 +13,9 @@ $(document).on 'turbolinks:load', () ->
     else
       $('.question a.vote').removeClass('hidden');
       $('.question a.vote_back').addClass('hidden');
+    return
+  App.cable.subscriptions.create "QuestionsChannel",
+    connected: ->
+      @perform 'follow'
+    received: (server_data) ->
+      $(".questions").append(JST["templates/question"](server_data))

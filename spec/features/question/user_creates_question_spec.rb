@@ -50,6 +50,26 @@ feature "User create questions", %q{
       expect(page).to have_content "Award for best answer"
       expect(page).to have_css("img[src*='award.jpeg']")
     end
+
+    scenario "multiply sessions, question appears on another user's session", js: true do
+
+      Capybara.using_session('guest') do
+        visit questions_path
+      end
+
+      Capybara.using_session('user') do
+        sign_in user
+        visit new_question_path
+
+        fill_in "Title", with: "Question title"
+        fill_in "Body", with: "Question body"
+        click_on "Create"
+      end
+
+      Capybara.using_session('guest') do
+        expect(page).to have_content "Question title"
+      end
+    end
   end
 
   scenario "Unauthenticated user" do
