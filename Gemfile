@@ -71,7 +71,7 @@ gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 
 gem 'slim-rails'
 
-gem 'devise'
+gem 'devise', github: 'heartcombo/devise'
 
 gem 'aws-sdk-s3', require: false
 
@@ -81,3 +81,7 @@ gem 'cocoon'
 
 gem 'skim'
 gem 'gon'
+
+gem 'omniauth'
+gem 'omniauth-oauth2'
+gem 'omniauth-github'
