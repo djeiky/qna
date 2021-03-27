@@ -5,6 +5,7 @@ module Services
     def initialize(auth)
       @auth = auth
     end
+
     def call
       authorization = Authorization.where(provider: auth.provider, uid: auth.uid.to_s).first
       return authorization.user if authorization
@@ -14,10 +15,14 @@ module Services
 
       if user
         user.create_authorization(auth)
+      elsif email
+        password = Devise.friendly_token[0, 20]
+        user = User.new(email: email, password: password, password_confirmation: password)
+        user.skip_confirmation!
+        user.save!
+        user.create_authorization(auth)
       else
-        password = Devise.friendly_token[0,20]
-        user = User.create(email: email, password: password, password_confirmation: password)
-        uesr.create_authorization(auth)
+        user = User.new
       end
       user
     end

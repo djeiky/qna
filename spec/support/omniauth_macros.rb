@@ -19,4 +19,13 @@ module OmniauthMacros
   ensure
     OmniAuth.config.logger = previous_logger
   end
+
+  def mock_auth_vkontakte
+    OmniAuth.config.mock_auth[:vkontakte] = OmniAuth::AuthHash.new({
+        provider: 'Vkontakte',
+        uid: '1235456',
+        info: { email: nil },
+        credentials: { token: 'mock_token', secret: 'mock_secret' }
+      })
+  end
 end

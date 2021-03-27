@@ -5,7 +5,8 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable,
-  :omniauthable, omniauth_providers: [:github]
+         :confirmable,
+         :omniauthable, omniauth_providers: [:github, :vkontakte]
 
   has_many :questions, dependent: :destroy
   has_many :answers, dependent: :destroy
@@ -18,11 +19,17 @@ class User < ApplicationRecord
     id == resource.user_id
   end
 
-  def self.find_for_auth(auth)
+  def self.find_for_oauth(auth)
     Services::FindForOauth.new(auth).call
   end
 
   def create_authorization(auth)
-    self.authorization.create(provider: auth.provider, uid: auth.uid)
+    self.authorizations.create(provider: auth.provider, uid: auth.uid)
+  end
+
+  protected
+
+  def confirmation_required?
+    false
   end
 end
