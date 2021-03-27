@@ -43,6 +43,7 @@ group :development, :test do
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
   gem 'factory_bot_rails'
   gem 'rspec-rails', '~> 3.8'
+  gem 'letter_opener'
 end
 
 group :development do
@@ -64,6 +65,7 @@ group :test do
   gem 'launchy'
   gem 'rails-controller-testing'
   gem 'shoulda-matchers'
+  gem 'capybara-email'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
@@ -71,7 +73,7 @@ gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 
 gem 'slim-rails'
 
-gem 'devise'
+gem 'devise', github: 'heartcombo/devise'
 
 gem 'aws-sdk-s3', require: false
 
@@ -81,3 +83,9 @@ gem 'cocoon'
 
 gem 'skim'
 gem 'gon'
+
+gem 'omniauth'
+gem 'omniauth-oauth2'
+gem 'omniauth-github'
+gem 'omniauth-vkontakte'
+gem 'omniauth-rails_csrf_protection', '~> 1.0'
